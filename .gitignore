@@ -1,1 +1,32 @@
-data/bangla.news.json
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+dist/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Env files (do not commit)
+.env
+.env.local
+.env.*.local
+
+# Large generated artifacts / caches
+clir-engine/backend/storage/
+clir-engine/backend/storage/**
+.cache/

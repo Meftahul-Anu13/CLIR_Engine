@@ -1,26 +1,18 @@
 from __future__ import annotations
 
 import os
-import time
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Query
 from starlette.middleware.cors import CORSMiddleware
 
-from .dataset import DatasetStore
-from .index_store import IndexStore
-from .query import QueryProcessor
-from .retrieval import RetrievalManager
+from .colab_core.search import get_components, search as core_search
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 DATA_DIR = BASE_DIR / "data" / "processed"
 STORAGE_DIR = BASE_DIR / "storage"
 
-dataset = DatasetStore(DATA_DIR)
-index_store = IndexStore(dataset, STORAGE_DIR)
-index_store.ensure_ready()
-query_processor = QueryProcessor(remove_stopwords=False)
-retrieval_manager = RetrievalManager(dataset, index_store)
+dataset, index_store, _, _ = get_components()
 
 
 def _allowed_origins() -> list[str]:
@@ -41,6 +33,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+def _startup_warmup() -> None:
+    get_components()
 
 
 @app.get("/health")
@@ -68,42 +65,37 @@ def search(
     q: str = Query(..., description="User query"),
     lang: str = Query("all", pattern="^(all|en|bn)$", description="Language filter"),
     k: int = Query(10, ge=1, le=50, description="Number of results"),
+    debug: bool = Query(False, description="Return extra debug data"),
 ):
     query = (q or "").strip()
     if not query:
         raise HTTPException(status_code=400, detail="Query is required.")
+    try:
+        return core_search(query, lang=lang, k=k, debug=debug)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
-    search_start = time.time()
-    bundle = query_processor.process(query)
-    retrieval = retrieval_manager.search(bundle, lang, k)
-    total_ms = int((time.time() - search_start) * 1000)
 
-    results = retrieval["results"]
-    top_score = results[0]["score"] if results else 0.0
-    warning = None
-    threshold = 0.20
-    if top_score < threshold:
-        warning = {
-            "threshold": threshold,
-            "top_score": round(float(top_score), 4),
-            "message": "Low confidence match. Try different keywords or a different language filter.",
-        }
-
-    timing_ms = {
-        "total": total_ms,
-        "translation": bundle["timing"]["translation_ms"],
-        "lexical": retrieval["timing_ms"]["lexical"],
-        "semantic": retrieval["timing_ms"]["semantic"],
-        "fuzzy": retrieval["timing_ms"]["fuzzy"],
-        "ranking": retrieval["timing_ms"]["ranking"],
-    }
-
+@app.get("/debug/index_integrity")
+def debug_index_integrity():
+    embeddings, faiss_index = index_store.ensure_ready()
+    probes = []
+    sample = min(3, dataset.size)
+    for doc_id in range(sample):
+        doc = dataset.get_document(doc_id)
+        vec = embeddings[doc_id : doc_id + 1]
+        _, idxs = faiss_index.search(vec, 1)
+        probes.append(
+            {
+                "doc_id": doc_id,
+                "title": doc.title,
+                "url": doc.url,
+                "language": doc.language,
+                "faiss_top_id": int(idxs[0][0]),
+            }
+        )
     return {
-        "query": query,
-        "query_variants": bundle["query_variants"],
-        "k": k,
-        "language_filter": lang,
-        "timing_ms": timing_ms,
-        "warning": warning,
-        "results": results,
+        "documents_sampled": sample,
+        "fingerprint": index_store.current_fingerprint(),
+        "probes": probes,
     }

@@ -8,11 +8,8 @@ from typing import Dict, List
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.append(str(ROOT))
 
-from app.dataset import DatasetStore  # noqa: E402
 from app.eval_metrics import mrr, ndcg_at_k, precision_at_k, recall_at_k  # noqa: E402
-from app.index_store import IndexStore  # noqa: E402
-from app.query import QueryProcessor  # noqa: E402
-from app.retrieval import RetrievalManager  # noqa: E402
+from app.colab_core.search import get_components, search as backend_search  # noqa: E402
 
 
 def load_labels(path: Path, url_to_doc: Dict[str, int]) -> Dict[str, Dict[int, int]]:
@@ -42,14 +39,7 @@ def load_labels(path: Path, url_to_doc: Dict[str, int]) -> Dict[str, Dict[int, i
 
 def main() -> None:
     data_dir = ROOT / "data" / "processed"
-    storage_dir = ROOT / "storage"
-    dataset = DatasetStore(data_dir)
-    index_store = IndexStore(dataset, storage_dir)
-    index_store.ensure_ready()
-
-    query_processor = QueryProcessor()
-    retriever = RetrievalManager(dataset, index_store)
-
+    dataset, _, _, _ = get_components()
     url_to_doc = {doc.url: doc.doc_id for doc in dataset.iter_documents()}
     labels_path = data_dir / "labels_fiiled.csv"
     if not labels_path.exists():
@@ -62,8 +52,7 @@ def main() -> None:
 
     rows: List[Dict[str, float]] = []
     for query, doc_labels in labels.items():
-        bundle = query_processor.process(query)
-        search = retriever.search(bundle, language_filter="all", k=50, include_internal_ids=True)
+        search = backend_search(query, lang="all", k=50, debug=True)
         doc_ids = [item["_doc_id"] for item in search["results"] if "_doc_id" in item]
         relevances = [doc_labels.get(doc_id, 0) for doc_id in doc_ids]
         total_relevant = sum(doc_labels.values())

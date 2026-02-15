@@ -2608,7 +2608,7 @@ Recommended simple workflow (manual):
 - **L3:** Executes this statement as part of the pipeline.
 - **L4:** Executes this statement as part of the pipeline.
 
-<!-- 
+
 ## Practical usage tips
 
 - Run cells **top-to-bottom** (Colab state matters).
@@ -2621,4 +2621,4 @@ Recommended simple workflow (manual):
 - **Same TF‑IDF stray backtick bug** as Module C (remove it).
 - `evaluate_per_query(...)` is called but **not defined**.  
   ✅ Fix: use `dfq, macro = evaluate_from_labels(...)` and treat `dfq` as your per-query table (or define a wrapper).
-- Ensure your filled labels file path is correct: the notebook uses `data/processed/labels_fiiled.csv` (note the spelling). -->
+- Ensure your filled labels file path is correct: the notebook uses `data/processed/labels_fiiled.csv` (note the spelling).

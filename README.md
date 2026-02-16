@@ -1,162 +1,275 @@
-# **CLIR Engine**
+# CLIR Engine
 
-**Cross-Lingual Information Retrieval System**
+## Cross-Lingual Information Retrieval System
 
-This repository contains an end-to-end cross-lingual information retrieval (CLIR) stack. It features a **FastAPI** backend for semantic indexing and retrieval, and a **Next.js** frontend for the search interface. The system is designed to process and search across English and Bangla news datasets.
+This repository contains an end-to-end Cross-Lingual Information Retrieval (CLIR) stack. It features a FastAPI backend for semantic indexing and retrieval, and a Next.js frontend for the search interface. The system is designed to process and search across English and Bangla news datasets.
 
-## **📂 Project Structure**
+---
 
-* **clir-engine/**: Source code for the application.  
-  * **backend/**: FastAPI server, FAISS indexing, semantic models, and evaluation scripts.  
-  * **frontend/**: Next.js web interface.  
-* **data/**: Raw datasets (e.g., english\_news.json, bangla\_news.json).  
+## 📂 Project Structure
+
+* **clir-engine/**: Source code for the application.
+
+  * **backend/**: FastAPI server, FAISS indexing, semantic models, and evaluation scripts.
+  * **frontend/**: Next.js web interface.
+* **data/**: Raw datasets (e.g., `english_news.json`, `bangla_news.json`).
 * **notebooks/**: Jupyter notebooks for data exploration and query pipeline experiments.
-## **✅ Prerequisites**
 
-* **Python**: 3.10+  
-* **Node.js**: 18+  
-* **Data**: The system expects processed data in clir-engine/backend/data/processed/.
+---
 
-## **🚀 Backend Setup**
+## ✅ Prerequisites
+
+* **Python**: 3.10+
+* **Node.js**: 18+
+* **Data**: The system expects processed data in `clir-engine/backend/data/processed/`.
+
+---
+
+# 🚀 Backend Setup
 
 The backend manages the search logic, embeddings (Sentence Transformers), and the FAISS vector index.
-### **1\. Installation**
+
+## 1. Installation
 
 Navigate to the backend directory and set up the environment:
 
+```bash
 cd clir-engine/backend
 
-\# Create virtual environment  
-python \-m venv .venv
+# Create virtual environment
+python -m venv .venv
+```
 
-\# Activate virtual environment  
-\# Windows (PowerShell):  
-. .venv/Scripts/activate  
-\# Unix/macOS:  
-\# source .venv/bin/activate
-
-\# Install dependencies  
-pip install \-r requirements.txt
-### **2\. Data Preparation**
-
-If your source data is in JSON array format (located in the root data/ folder), convert it to JSONL (JSON Lines) and place it in the backend's processed directory.
-
-\# Ensure you are inside clir-engine/backend/
-
-\# Convert English Data  
-python scripts/convert\_json\_to\_jsonl.py ../../data/english\_news.json data/processed/english\_news.jsonl
-
-\# Convert Bangla Data  
-python scripts/convert\_json\_to\_jsonl.py ../../data/bangla\_news.json data/processed/bangla\_news.jsonl
-### **3\. Build Indexes**
-
-Generate the embeddings and FAISS index. This must be run once before starting the server.
-
-python scripts/build\_indexes.py
-
-*Creates storage/doc\_emb.npy, storage/faiss.index, and storage/doc\_fingerprint.json.*
-### **4\. Run the Server**
-
-Start the API server.
+### Activate Virtual Environment
 
 **Windows (PowerShell):**
 
-$env:BACKEND\_ALLOWED\_ORIGINS="http://localhost:3000"  
-uvicorn app.main:app \--host 0.0.0.0 \--port 8000
+```bash
+. .venv/Scripts/activate
+```
 
 **Unix/macOS:**
 
-export BACKEND\_ALLOWED\_ORIGINS=http://localhost:3000  
-uvicorn app.main:app \--host 0.0.0.0 \--port 8000
+```bash
+source .venv/bin/activate
+```
 
-**API Endpoints:**
+### Install Dependencies
 
-* GET /health: System status.  
-* GET /search: Main search endpoint.  
-* GET /meta: Dataset metadata.  
-* GET /debug/index\_integrity: Verify FAISS ↔ Dataset alignment.
+```bash
+pip install -r requirements.txt
+```
 
-## **💻 Frontend Setup**
+---
+
+## 2. Data Preparation
+
+If your source data is in JSON array format (located in the root `data/` folder), convert it to JSONL (JSON Lines) and place it in the backend's processed directory.
+
+Ensure you are inside `clir-engine/backend/`:
+
+```bash
+# Convert English Data
+python scripts/convert_json_to_jsonl.py ../../data/english_news.json data/processed/english_news.jsonl
+
+# Convert Bangla Data
+python scripts/convert_json_to_jsonl.py ../../data/bangla_news.json data/processed/bangla_news.jsonl
+```
+
+---
+
+## 3. Build Indexes
+
+Generate the embeddings and FAISS index. This must be run once before starting the server.
+
+```bash
+python scripts/build_indexes.py
+```
+
+This creates:
+
+* `storage/doc_emb.npy`
+* `storage/faiss.index`
+* `storage/doc_fingerprint.json`
+
+---
+
+## 4. Run the Server
+
+Start the API server.
+
+### Windows (PowerShell)
+
+```bash
+$env:BACKEND_ALLOWED_ORIGINS="http://localhost:3000"
+uvicorn app.main:app --host 0.0.0.0 --port 8000
+```
+
+### Unix/macOS
+
+```bash
+export BACKEND_ALLOWED_ORIGINS=http://localhost:3000
+uvicorn app.main:app --host 0.0.0.0 --port 8000
+```
+
+---
+
+## API Endpoints
+
+* `GET /health` — System status
+* `GET /search` — Main search endpoint
+* `GET /meta` — Dataset metadata
+* `GET /debug/index_integrity` — Verify FAISS ↔ Dataset alignment
+
+---
+
+# 💻 Frontend Setup
 
 The frontend provides the user interface for searching and viewing results.
 
+```bash
 cd clir-engine/frontend
 
-\# Install dependencies  
+# Install dependencies
 npm install
+```
 
-\# Run Development Server  
-\# Windows (PowerShell):  
-$env:NEXT\_PUBLIC\_API\_BASE="http://localhost:8000"  
+### Run Development Server
+
+**Windows (PowerShell):**
+
+```bash
+$env:NEXT_PUBLIC_API_BASE="http://localhost:8000"
 npm run dev
+```
 
-\# Unix/macOS:  
-\# export NEXT\_PUBLIC\_API\_BASE="http://localhost:8000"  
-\# npm run dev
+**Unix/macOS:**
 
-Open [http://localhost:3000](https://www.google.com/search?q=http://localhost:3000) to view the application.
+```bash
+export NEXT_PUBLIC_API_BASE="http://localhost:8000"
+npm run dev
+```
 
-## **📊 Evaluation (Module D)**
+Open the application at:
+
+```
+http://localhost:3000
+```
+
+---
+
+# 📊 Evaluation (Module D)
 
 To benchmark the ranking stack (Precision@10, Recall@50, nDCG@10, MRR):
 
-1. Ensure clir-engine/backend/data/processed/labels\_fiiled.csv exists with columns: query, doc\_url, language, relevant, annotator.  
+1. Ensure `clir-engine/backend/data/processed/labels_fiiled.csv` exists with columns:
+
+   ```
+   query, doc_url, language, relevant, annotator
+   ```
+
 2. Run the evaluation script:
 
-cd clir-engine/backend  
-python scripts/run\_eval.py
+```bash
+cd clir-engine/backend
+python scripts/run_eval.py
+```
 
-Results are saved to data/processed/eval\_results.csv.
+Results are saved to:
 
-## **🔍 Error Analysis Workflow**
+```
+data/processed/eval_results.csv
+```
+
+---
+
+# 🔍 Error Analysis Workflow
 
 Follow this workflow to generate the Error Distribution Report.
-### **1\. Export Failure Cases**
+
+## 1. Export Failure Cases
 
 Identify queries where the system failed to retrieve relevant documents.
 
+```bash
 cd clir-engine/backend
 
-\# Export top 10 results for top 100 queries  
-python scripts/export\_error\_cases.py \--mode top10 \--k 10 \--n 100
-### **2\. Annotate Errors**
+# Export top 10 results for top 100 queries
+python scripts/export_error_cases.py --mode top10 --k 10 --n 100
+```
 
-1. Locate clir-engine/backend/data/processed/error\_cases\_template.csv.  
-2. Rename it to error\_cases\_annotated.csv.  
-3. Fill in is\_relevant. For non-relevant results, populate error\_type with:  
-   * Translation Failures  
-   * Named Entity Mismatch  
-   * Semantic Gap  
-   * Cross-Script Ambiguity  
-   * Code-Switching
-### **3\. Generate Report**
+---
+
+## 2. Annotate Errors
+
+1. Locate `clir-engine/backend/data/processed/error_cases_template.csv`.
+2. Rename it to `error_cases_annotated.csv`.
+3. Fill in `is_relevant`.
+4. For non-relevant results, populate `error_type` with one of the following:
+
+* Translation Failures
+* Named Entity Mismatch
+* Semantic Gap
+* Cross-Script Ambiguity
+* Code-Switching
+
+---
+
+## 3. Generate Report
 
 Compute statistics and generate the LaTeX table.
 
-\# Inside clir-engine/backend/  
-python scripts/compute\_error\_distribution.py \--denom failures
+```bash
+# Inside clir-engine/backend/
+python scripts/compute_error_distribution.py --denom failures
+```
 
-**Outputs:**
+Outputs:
 
-* data/processed/error\_distribution\_summary.json  
-* data/processed/error\_distribution\_table.tex
-* ## **🛠 Maintenance & Debugging**
+* `data/processed/error_distribution_summary.json`
+* `data/processed/error_distribution_table.tex`
 
-### **Rebuilding Indexes**
+---
+
+# 🛠 Maintenance & Debugging
+
+## Rebuilding Indexes
 
 If you modify the semantic model or the corpus data:
 
-1. **Stop the server.**  
-2. **Clean old artifacts:**  
-   \# Windows (from clir-engine/backend)  
-   Remove-Item storage\\doc\_emb.npy, storage\\faiss.index, storage\\doc\_fingerprint.json
+1. **Stop the server.**
 
-   \# Unix (from clir-engine/backend)  
-   rm storage/doc\_emb.npy storage/faiss.index storage/doc\_fingerprint.json
+2. **Clean old artifacts:**
 
-3. **Rebuild:**  
-   python scripts/build\_indexes.py
+   **Windows (from clir-engine/backend):**
 
-### **Debugging Search**
+   ```bash
+   Remove-Item storage\doc_emb.npy, storage\faiss.index, storage\doc_fingerprint.json
+   ```
 
-Append \&debug=true to any search query URL to inspect translation steps, query variants, and internal scores.
+   **Unix (from clir-engine/backend):**
+
+   ```bash
+   rm storage/doc_emb.npy storage/faiss.index storage/doc_fingerprint.json
+   ```
+
+3. **Rebuild:**
+
+   ```bash
+   python scripts/build_indexes.py
+   ```
+
+---
+
+## Debugging Search
+
+Append `&debug=true` to any search query URL to inspect translation steps, query variants, and internal scores.
+
+Example:
+
+```
+http://localhost:8000/search?q=climate&debug=true
+```
+
+---
+

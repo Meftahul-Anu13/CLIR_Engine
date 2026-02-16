@@ -140,3 +140,23 @@ python scripts/compute\_error\_distribution.py \--denom failures
 
 * data/processed/error\_distribution\_summary.json  
 * data/processed/error\_distribution\_table.tex
+* ## **🛠 Maintenance & Debugging**
+
+### **Rebuilding Indexes**
+
+If you modify the semantic model or the corpus data:
+
+1. **Stop the server.**  
+2. **Clean old artifacts:**  
+   \# Windows (from clir-engine/backend)  
+   Remove-Item storage\\doc\_emb.npy, storage\\faiss.index, storage\\doc\_fingerprint.json
+
+   \# Unix (from clir-engine/backend)  
+   rm storage/doc\_emb.npy storage/faiss.index storage/doc\_fingerprint.json
+
+3. **Rebuild:**  
+   python scripts/build\_indexes.py
+
+### **Debugging Search**
+
+Append \&debug=true to any search query URL to inspect translation steps, query variants, and internal scores.

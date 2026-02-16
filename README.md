@@ -37,3 +37,16 @@ python \-m venv .venv
 
 \# Install dependencies  
 pip install \-r requirements.txt
+### **2\. Data Preparation**
+
+If your source data is in JSON array format (located in the root data/ folder), convert it to JSONL (JSON Lines) and place it in the backend's processed directory.
+
+\# Ensure you are inside clir-engine/backend/
+
+\# Convert English Data  
+python scripts/convert\_json\_to\_jsonl.py ../../data/english\_news.json data/processed/english\_news.jsonl
+
+\# Convert Bangla Data  
+python scripts/convert\_json\_to\_jsonl.py ../../data/bangla\_news.json data/processed/bangla\_news.jsonl
+
+

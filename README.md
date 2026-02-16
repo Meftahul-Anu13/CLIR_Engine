@@ -96,3 +96,18 @@ npm run dev
 
 Open [http://localhost:3000](https://www.google.com/search?q=http://localhost:3000) to view the application.
 
+## **📊 Evaluation (Module D)**
+
+To benchmark the ranking stack (Precision@10, Recall@50, nDCG@10, MRR):
+
+1. Ensure clir-engine/backend/data/processed/labels\_fiiled.csv exists with columns: query, doc\_url, language, relevant, annotator.  
+2. Run the evaluation script:
+
+cd clir-engine/backend  
+python scripts/run\_eval.py
+
+Results are saved to data/processed/eval\_results.csv.
+
+## **🔍 Error Analysis Workflow**
+
+Follow this workflow to generate the Error Distribution Report.

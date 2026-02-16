@@ -48,5 +48,12 @@ python scripts/convert\_json\_to\_jsonl.py ../../data/english\_news.json data/pr
 
 \# Convert Bangla Data  
 python scripts/convert\_json\_to\_jsonl.py ../../data/bangla\_news.json data/processed/bangla\_news.jsonl
+### **3\. Build Indexes**
+
+Generate the embeddings and FAISS index. This must be run once before starting the server.
+
+python scripts/build\_indexes.py
+
+*Creates storage/doc\_emb.npy, storage/faiss.index, and storage/doc\_fingerprint.json.*
 
 

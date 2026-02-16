@@ -119,3 +119,13 @@ cd clir-engine/backend
 
 \# Export top 10 results for top 100 queries  
 python scripts/export\_error\_cases.py \--mode top10 \--k 10 \--n 100
+### **2\. Annotate Errors**
+
+1. Locate clir-engine/backend/data/processed/error\_cases\_template.csv.  
+2. Rename it to error\_cases\_annotated.csv.  
+3. Fill in is\_relevant. For non-relevant results, populate error\_type with:  
+   * Translation Failures  
+   * Named Entity Mismatch  
+   * Semantic Gap  
+   * Cross-Script Ambiguity  
+   * Code-Switching

@@ -10,23 +10,6 @@ This project uses a multilingual Bangla–English news dataset with a shared sch
 - `title`, `body`, `url`, `date`, `language` (required by the assignment)
 - `text = title + body`
 
-In our Colab runs, we used the following datasets (row counts shown for your reporting):
-
-- 3000 documents (JSON/JSONL)
-- 2999 documents (JSON/JSONL)
-- 501 documents (CSV)
-- 397 documents (CSV)
-- 100 documents (CSV)
-- 12 documents (CSV)
-
-> Tip: Keep your processed Bangla and English corpora in *JSONL* for streaming-friendly loading and easier debugging.
-
-## Outputs you should expect
-- A `QueryProcessor` (or equivalent) that outputs both `q_en` and `q_bn`.
-- Optional expansions and NE mappings for debugging and error analysis.
-- Timing info for translation and preprocessing (useful for Module D reporting).
-
-## Cell-by-cell walkthrough
 
 ### Cell 1: pip install -q spacy
 *Type:* `code`

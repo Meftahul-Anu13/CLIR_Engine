@@ -55,5 +55,44 @@ Generate the embeddings and FAISS index. This must be run once before starting t
 python scripts/build\_indexes.py
 
 *Creates storage/doc\_emb.npy, storage/faiss.index, and storage/doc\_fingerprint.json.*
+### **4\. Run the Server**
 
+Start the API server.
+
+**Windows (PowerShell):**
+
+$env:BACKEND\_ALLOWED\_ORIGINS="http://localhost:3000"  
+uvicorn app.main:app \--host 0.0.0.0 \--port 8000
+
+**Unix/macOS:**
+
+export BACKEND\_ALLOWED\_ORIGINS=http://localhost:3000  
+uvicorn app.main:app \--host 0.0.0.0 \--port 8000
+
+**API Endpoints:**
+
+* GET /health: System status.  
+* GET /search: Main search endpoint.  
+* GET /meta: Dataset metadata.  
+* GET /debug/index\_integrity: Verify FAISS ↔ Dataset alignment.
+
+## **💻 Frontend Setup**
+
+The frontend provides the user interface for searching and viewing results.
+
+cd clir-engine/frontend
+
+\# Install dependencies  
+npm install
+
+\# Run Development Server  
+\# Windows (PowerShell):  
+$env:NEXT\_PUBLIC\_API\_BASE="http://localhost:8000"  
+npm run dev
+
+\# Unix/macOS:  
+\# export NEXT\_PUBLIC\_API\_BASE="http://localhost:8000"  
+\# npm run dev
+
+Open [http://localhost:3000](https://www.google.com/search?q=http://localhost:3000) to view the application.
 

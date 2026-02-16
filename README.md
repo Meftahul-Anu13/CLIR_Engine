@@ -129,3 +129,14 @@ python scripts/export\_error\_cases.py \--mode top10 \--k 10 \--n 100
    * Semantic Gap  
    * Cross-Script Ambiguity  
    * Code-Switching
+### **3\. Generate Report**
+
+Compute statistics and generate the LaTeX table.
+
+\# Inside clir-engine/backend/  
+python scripts/compute\_error\_distribution.py \--denom failures
+
+**Outputs:**
+
+* data/processed/error\_distribution\_summary.json  
+* data/processed/error\_distribution\_table.tex

@@ -111,3 +111,11 @@ Results are saved to data/processed/eval\_results.csv.
 ## **🔍 Error Analysis Workflow**
 
 Follow this workflow to generate the Error Distribution Report.
+### **1\. Export Failure Cases**
+
+Identify queries where the system failed to retrieve relevant documents.
+
+cd clir-engine/backend
+
+\# Export top 10 results for top 100 queries  
+python scripts/export\_error\_cases.py \--mode top10 \--k 10 \--n 100

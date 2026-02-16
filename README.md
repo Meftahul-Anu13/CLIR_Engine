@@ -11,3 +11,12 @@ This repository contains an end-to-end cross-lingual information retrieval (CLIR
   * **frontend/**: Next.js web interface.  
 * **data/**: Raw datasets (e.g., english\_news.json, bangla\_news.json).  
 * **notebooks/**: Jupyter notebooks for data exploration and query pipeline experiments.
+## **✅ Prerequisites**
+
+* **Python**: 3.10+  
+* **Node.js**: 18+  
+* **Data**: The system expects processed data in clir-engine/backend/data/processed/.
+
+## **🚀 Backend Setup**
+
+The backend manages the search logic, embeddings (Sentence Transformers), and the FAISS vector index.
